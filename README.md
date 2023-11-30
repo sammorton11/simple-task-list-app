@@ -6,14 +6,23 @@ This project is a simple CRUD (Create, Read, Update, Delete) Todo List applicati
 
 Features
 User Authentication: Users can sign up, log in, and log out securely.
+
 Task Management: Add, edit, and delete tasks with ease.
+
 Responsive Design: The application is designed to work seamlessly on various devices.
+
 Tech Stack
 Frontend: React with React Router
+
 Backend: Node.js, Sequelize (ORM for PostgreSQL)
+
 Database: PostgreSQL
+
 Authentication: JWT (JSON Web Tokens)
+
 Styling: Custom CSS
+
+
 
 
 Getting Started
