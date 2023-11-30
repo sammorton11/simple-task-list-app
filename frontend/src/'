@@ -1,0 +1,94 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+.card-controls {
+   padding: 0.5rem;
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+}
+
+button {
+   font-family: inherit;
+   padding: 4px;
+   font-size: 100%;
+   line-height: 1.15;
+   margin: 0;
+   overflow: visible;
+   text-transform: none;
+   -webkit-appearance: button;
+}
+
+input[type=text] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+input {
+   padding: 12px 20px;
+   margin: 8px 0;
+}
+
+.container {
+   padding: 25px;
+}
+
+.navbar {
+   overflow: hidden;
+   justify-content: space-between;
+   width: 100%;
+   align-items: space-between;
+}
+.navbar-container {
+   display: flex;
+   justify-content: space-between;
+   width: 100%;
+   align-items: space-between;
+   padding: 1rem;
+}
+
+/* Floating column for inputs: 75% width */
+.col-75 {
+   float: left;
+   width: 15%;
+   margin-top: 6px;
+   padding-bottom: 11px;
+}
+
+
+/* Todo Card */
+.card-container {
+   display: flex;
+   padding: 1rem;
+   margin-right: 2rem;
+   background-color: lightgreen;
+   border-radius: 9px;
+   flex-direction: row;
+   align-items: center;
+   justify-content: space-between;
+   width: 100%;
+   max-width: 500px;
+}
+.task-text {
+   font-size: 1.5rem;
+   font-weight: 500;
+   margin: 0;
+   padding: 14px;
+   text-align: center;
+   color: #242424;
+}

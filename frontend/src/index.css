@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+   background-color: #e0ffff;
+   align-self: center;
+   justify-self: center;
+}
+
+.task-list-controls {
+   background-color: #6e8f9e;
+}
+
+.add-task-dialog {
+   background-color: #2e838e;
+   padding: 45px;
+   max-width: 550px;
+}
+
+.nav-bar {
+   margin: 10px;
+   border-radius: 15px;
+   position: sticky;
+   top: 0;
+   opacity: 0.8;
+   z-index: 100;
+}
