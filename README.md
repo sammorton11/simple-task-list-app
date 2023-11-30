@@ -53,10 +53,21 @@ npm start
 
 Open your browser and navigate to http://localhost:3000 to view the app.
 
-API Endpoints
+API Endpoints:
 GET /api/todos/todo/:user_id: Get all todos for a specific user.
+
 POST /api/todos/todo/:user_id: Add a new todo for a user.
+
 PUT /api/todos/todo/:user_id/:id: Update a todo for a user.
+
 GET /api/todos/todo/:user_id/:id: Get a specific todo for a user.
+
 DELETE /api/todos/todo/:user_id/:id: Delete a todo for a user.
+
 DELETE /api/todos/todo/:user_id: Delete all completed todos for a user.
+
+
+
+![Screen Shot 2023-11-29 at 11 05 24 PM](https://github.com/sammorton11/simple-task-list-app/assets/86651172/964a2a55-9f95-4209-be0a-fd8b6a553c63)
+
+
