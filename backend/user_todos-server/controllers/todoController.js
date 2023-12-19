@@ -34,10 +34,11 @@ async function getTodoById(res, req) {
 async function insertTodo(req, res) {
    try {
       const { user_id } = req.params;
-      const { task, completed } = req.body;
+      const { task, description, completed } = req.body;
       const data = {
          user_id,
          task,
+         description,
          completed,
       }
       const todo = await Todos.create(data)
@@ -52,13 +53,12 @@ async function insertTodo(req, res) {
 
 async function updateTodo(req, res) {
    const { user_id, id  } = req.params;
-
-   // add the todo data to the request body when we have the update form ready
-   const { task, completed } = req.body;
+   const { task, completed, description } = req.body;
 
    const data = {
       task,
       completed,
+      description,
    }
 
    try {
@@ -72,10 +72,13 @@ async function updateTodo(req, res) {
       }
       
       if (data.task) todo.task = data.task;
+      if (data.description) todo.description = data.description;
       todo.completed = data.completed;
 
       todo.changed('task', true);
+      todo.changed('description', true);
       todo.changed('completed', true);
+      todo.updated_at = new Date();
 
       await todo.save();
 

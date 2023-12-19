@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
 export const Navbar = () => {
    const navigate = useNavigate();
 
@@ -9,6 +8,7 @@ export const Navbar = () => {
    function logout() {
       const confirmation = confirm('Are you sure you want to logout?');
       if (confirmation) {
+         localStorage.removeItem('token');
          fetch('http://localhost:8080/api/users/logout', {
             method: 'POST',
             headers: {
@@ -31,14 +31,12 @@ export const Navbar = () => {
    }
 
    return (
-      <nav className="nav-bar text-slate-800 shadow-md rounded-sm">
+      <nav className="w-full mb-2 my-3 rounded-lg bg-blue-200 sticky top-0  opacity-90 p-3 text-slate-800 shadow-md border border-solid border-slate-500 border-1">
          <div className="p-5 mx-auto flex justify-between">
-            <div className="text-white text-lg font-bold">
-               <a href="/" className="hover:text-gray-300">Todo App</a>
-            </div>
+            <a href="/" className="text-3xl font-bold text-slate-800">Quik-Tasks</a>
             <div className="flex items-center">
                <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md mr-4 hover:bg-blue-600 transition duration-300"
+                  className="bg-red-200 text-slate-600 px-4 py-2 rounded-md mr-4 hover:bg-blue-600 transition duration-300 border border-solid border-slate-500 border-1"
                   onClick={logout}
                >
                   Logout

@@ -3,26 +3,14 @@
 @tailwind utilities;
 
 :root {
-   background-color: #e0ffff;
-   align-self: center;
-   justify-self: center;
+  background-color: #e0ffff;
+  margin: 0;
+  padding: 0 5px;
+  justify-content: center;
+  min-height: 100vh;
 }
 
-.task-list-controls {
-   background-color: #6e8f9e;
-}
-
-.add-task-dialog {
-   background-color: #2e838e;
-   padding: 45px;
-   max-width: 550px;
-}
-
-.nav-bar {
-   margin: 10px;
-   border-radius: 15px;
-   position: sticky;
-   top: 0;
-   opacity: 0.8;
-   z-index: 100;
+li {
+   width: 100%;
+   padding: 5px;
 }
