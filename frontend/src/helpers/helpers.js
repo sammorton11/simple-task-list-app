@@ -65,6 +65,7 @@
 
    function deleteTask(id, todo_id) {
       var result = confirm("Are you sure you want to delete this task?");
+
       if (!result) {
          return;
       } else {
@@ -78,7 +79,6 @@
                if (res.ok) {
                   getUserData(id);
                   console.log('Task deleted successfully');
-                  // You can also remove the todo from the UI if needed
                } else {
                   console.error('Error deleting task:', res.statusText);
                }

@@ -14,7 +14,22 @@ module.exports = (sequelize, DataTypes) => {
       completed: {
          type: DataTypes.BOOLEAN,
          defaultValue: false
-      }
+      },
+      description: {
+         type: DataTypes.STRING,
+         allowNull: true,
+         validate: {
+            len: [1, 1000]
+         }
+      },
+      created_at: {
+         type: DataTypes.DATE,
+         defaultValue: DataTypes.NOW
+      },
+      updated_at: {
+         type: DataTypes.DATE,
+         defaultValue: DataTypes.NOW
+      },
    }, { timestamps: false, tableName: 'user_todos'});
    return Todo;
 }

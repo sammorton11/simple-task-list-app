@@ -1,35 +1,36 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const TodoCard = ({ todo_id, user_id, task, completed, getUserData }) => {
+export const TodoCard = ({ todo_id, user_id, task, description, completed, created_at, updated_at, getUserData }) => {
    const [checked, setChecked] = useState(completed);
    const navigate = useNavigate();
 
-   function deleteTask() {
-      var result = confirm("Are you sure you want to delete this task?");
-      if (!result) {
-         return;
-      } else {
-         fetch(`http://localhost:8081/api/todos/todo/${user_id}/${todo_id}`, {
-            method: 'DELETE',
-            headers: {
-               'Content-Type': 'application/json',
-            },
-         })
-            .then((res) => {
-               if (res.ok) {
-                  getUserData(user_id);
-                  console.log('Task deleted successfully');
-                  // You can also remove the todo from the UI if needed
-               } else {
-                  console.error('Error deleting task:', res.statusText);
-               }
-            })
-            .catch((error) => {
-               console.error('Error:', error);
-            });
-      }
-   }
+   const colors = ["bg-green-200", "bg-indigo-100", "bg-yellow-100"];
+   const randomColorClass = useMemo(() => {
+      return colors[Math.floor(Math.random() * colors.length)];
+   }, []); 
+
+   const created_at_date = new Date(created_at);
+   
+   const formatted_created_at = created_at_date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      day: 'numeric',
+      month: 'numeric',
+      weekday: 'long',
+      year: 'numeric',
+   });
+
+   const updated_at_date = new Date(updated_at);
+   const formatted_updated_at = updated_at_date.toLocaleDateString('en-US', { 
+      hour: '2-digit',
+      minute: '2-digit',
+      day: 'numeric',
+      month: 'numeric', 
+      weekday: 'long', 
+      year: 'numeric', 
+   });
+
    
    function updateTask() {
       handleCheck();
@@ -57,12 +58,20 @@ export const TodoCard = ({ todo_id, user_id, task, completed, getUserData }) => 
    }
 
    return (
-      <div className="todo-card flex p-5 bg-green-200 rounded-2xl items-center justify-between text-slate-600 shadow-2xl">
-         <p className="text-grey-600 text-3xl font-medium hover:cursor-pointer" onClick={() => navigate(`/edit-todo/${user_id}/${todo_id}/${task}/${completed}`)}>{task}</p>
-         <div className="p-6 flex flex-row justify-between w-1/8 p-5">
-            <button className="hover:cursor-pointer p-3 mr-9 bg-red-300 rounded-lg " onClick={deleteTask}>Delete</button>
-            <input className="hover:cursor-pointer accent-blue-300 w-6 transition duration-550 ease-in-out" type="checkbox" onChange={updateTask} checked={checked} />
+      <div className={`flex flex-col w-full sm:text-sm md:text-md lg:text-xl p-5 rounded-2xl text-slate-600 shadow-2xl my-4 border border-solid border-slate-900 border-1 ${randomColorClass}`}>
+         <div className="flex items-center justify-between w-full pb-5 border-b border-gray-300">
+            <p className="text-gray-600 text-xl hover:cursor-pointer hover:text-blue-500 text-ellipse max-w-md" 
+               onClick={() =>  navigate('/edit-todo', { state: {user_id, todo_id, task, description, formatted_created_at, formatted_updated_at, completed } })}>
+               {task}
+            </p>
+            <input
+               className="cursor-pointer w-4 h-4 text-blue-300 transition duration-550 ease-in-out"
+               type="checkbox"
+               onChange={updateTask}
+               checked={checked}
+            />
          </div>
+         <p className="description-text text-grey-600 text-lg">{description}</p>
       </div>
    );
 }
