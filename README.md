@@ -77,6 +77,6 @@ DELETE /api/todos/todo/:user_id: Delete all completed todos for a user.
 
 
 
-![Screen Shot 2023-11-29 at 11 05 24 PM](https://github.com/sammorton11/simple-task-list-app/assets/86651172/964a2a55-9f95-4209-be0a-fd8b6a553c63)
+![Screen Shot 2023-12-19 at 10 00 13 AM](https://github.com/sammorton11/simple-task-list-app/assets/86651172/886c4674-6b74-45c9-8b99-9c868f0e1402)
 
 
