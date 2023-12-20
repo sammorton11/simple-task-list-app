@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../models');
 
+// User table
 const User = db.users;
 
 const generateToken = (user) => {
@@ -15,23 +16,31 @@ const generateToken = (user) => {
 
 const signup = async (req, res) => {
    try {
-      const { email, password } = req.body;
+      const { email, password, confirmPassword } = req.body;
+      
+      if (password !== confirmPassword) {
+         return res.status(409).send("Passwords don't match");
+      }
+
+      console.log("Password before bcrypt: ", password);
+      const salt = bcrypt.genSaltSync(10);
+      console.log("Salt", salt);
 
       const data = {
          email,
-         password: await bcrypt.hash(password, 10), // Hashing the password with bcrypt
+         password: bcrypt.hashSync(password, salt), // Hashing the password with bcrypt
       };
 
       // Creating a user with the data from the request body
       const user = await User.create(data);
 
       if (user) {
-         let token = generateToken(user);
+         //let token = generateToken(user);
 
          // Setting the cookie to the token
-         res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
-         console.log("user", JSON.stringify(user, null, 2));
-         console.log(token);
+         //res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
+         //console.log("user", JSON.stringify(user, null, 2));
+         //console.log("Token", token);
 
          //send users data to the client 
          return res.status(201).send(user);
@@ -48,38 +57,35 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
    try {
       const { email, password } = req.body;
-      console.log(email, password);
-
       const user = await User.findOne({
-         where: { email: email },  
+         where: { email: email },
       });
-      console.log(user);
 
-      if (user) {
-         // Comparing the password from the request body to the password in the db
-         const isSame = await bcrypt.compare(password, user.password);
+      console.log("User", user);
 
-         // If the passwords match, generate a token and set the cookie to the token
-         if (isSame) {
-            let token = generateToken(user);
-
-            // Setting the cookie to the token
-            res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
-            console.log("user", JSON.stringify(user, null, 2));
-            console.log(token);
-
-            // Send the user data to the client
-            return res.status(200).send(user);
-
-         } else {
-            return res.status(401).send("Authentication failed");
-         }
-      } else {
-         return res.status(401).send("Authentication failed");
+      if (!user) {
+         console.log("User doesn't exist");
+         return res.status(401).json({error: "Authentication failed - User doesn't exist"});
       }
 
+      const isSame = bcrypt.compareSync(password, user.password);
+      console.log(isSame);
+
+      if (isSame === false) {
+         console.log("Something wrong with the password - Passwords don't match");
+         return res.status(401).json({error: "Something wrong with the password - Passwords don't match"});
+      }
+
+      console.log(user);
+
+      let token = generateToken(user);
+      //res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
+      return res.status(200).send(user);
+
    } catch (error) {
+      console.log("Something wrong with the server");
       console.log(error);
+      return res.status(500).json({error: "Unable to login - Something wrong with the server"});
    }
 }
 
@@ -88,7 +94,6 @@ const logout = (_, res) => {
    return res.status(200).send("Logged out");
 }
 
-// Export our functions
 module.exports = {
    signup,
    login,
