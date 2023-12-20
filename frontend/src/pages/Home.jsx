@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { TodoCard } from './pages/TodoCard';
-import AddTaskDialog from './components/AddTaskDialog';
+import { TodoCard } from '../components/TodoCard';
+import AddTaskDialog from '../components/AddTaskDialog';
 
 export const Home = () => {
    const location = useLocation();
@@ -181,7 +181,7 @@ export const Home = () => {
                </form>
             </div>
          </div>
-         <div className="pb-5 w-full flex justify-end">
+         <div className="w-full flex justify-end">
             <button
                className='lg:w-1/6 sm:w-full sm:text-sm md:text-md lg:text-xl p-3 border border-solid border-slate-500 border-1 bg-red-200 text-slate-800 rounded-lg hover:cursor-pointer'
                onClick={toggleMenu}
@@ -190,7 +190,7 @@ export const Home = () => {
             </button>
          </div>
          <div className="w-full flex justify-end lg:px-24">
-            <menu  className={`lg:absolute sm:w-1/4 w-full bg-slate-300 rounded-lg`}>
+            <menu  className={`mt-5 lg:absolute sm:w-1/4 w-full bg-green-100/[0.7] rounded-lg`}>
                <ul className={`shadow-md flex flex-col rounded-md p-2 justify-between ${isMenuOpen ? 'block' : 'hidden'} w-full md:w-full`}>
                   <li>
                      <button className='sm:text-sm md:text-md lg:text-xl p-3 sm:p-4 lg:p-5 bg-green-200 text-slate-800 rounded-lg hover:cursor-pointer border border-solid border-slate-500 border-1 w-full' onClick={handleOpen}>
@@ -217,7 +217,7 @@ export const Home = () => {
          </div>
          <ul className='md:p-10 grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full'>
             {
-               userTodos.map((todo) => (
+               userTodos.map((todo, index) => (
                   <li key={todo.id}>
                      <TodoCard
                         todo_id={todo.id}

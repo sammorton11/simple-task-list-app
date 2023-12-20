@@ -3,7 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 function EditTodo() {
    const location = useLocation();
+
    const { user_id, todo_id, task, description, formatted_created_at, formatted_updated_at, completed } = location.state || {};
+
    const [formData, setFormData] = useState({
       task: task, 
       description: description, 
