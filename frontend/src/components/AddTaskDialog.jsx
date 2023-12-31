@@ -1,4 +1,40 @@
-function AddTaskDialog({ isOpened, handleOpen, addTask, formData, setFormData }) {
+import { useState } from "react";
+
+function AddTaskDialog({ isOpened, handleOpen, getUserData }) {
+
+   const [formData, setFormData] = useState({task: '', description: '', completed: false});
+
+   const token = localStorage.getItem('token');
+   console.log('Token in AddTaskDialog', token);
+
+   function addTask(event) {
+      event.preventDefault();
+
+      fetch(`http://127.0.0.1:5000/todos`, {
+         method: 'POST',
+         headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'credentials': 'include',
+         },
+         body: JSON.stringify({
+            task: formData.task,
+            description: formData.description,
+            completed: formData.completed,
+         }),
+      })
+         .then((res) => res.json())
+         .then((data) => {
+            console.log('Task added successfully:', data); 
+            setFormData({ task: '', description: '', completed: false });
+            getUserData(token);
+         })
+         .catch((error) => {
+            console.error('Error:', error);
+         });
+   }
+
    return (
       <>
          <dialog 
@@ -25,7 +61,7 @@ function AddTaskDialog({ isOpened, handleOpen, addTask, formData, setFormData })
                />
             </section>
             <textarea
-               className='p-5 rounded-5px border border-black bg-green-200 rounded-xl bg-green-200 rounded-xl w-full'
+               className='p-5 rounded-5px border border-black bg-green-200 rounded-xl bg-green-200 w-full'
                type="text"
                name="description"
                value={formData.description}
@@ -44,7 +80,7 @@ function AddTaskDialog({ isOpened, handleOpen, addTask, formData, setFormData })
                   className='p-4 bg-green-300 rounded-xl hover:cursor-pointer w-full sm:w-auto'
                   type="submit"
                   value="Submit"
-                  onClick={(e) => { addTask(e); handleOpen() }}
+                  onClick={(e) => { addTask(e, token, formData, setFormData); handleOpen() }}
                />
                <div style={{ padding: '10px' }} />
             </section>

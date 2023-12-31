@@ -1,0 +1,85 @@
+import { useState } from "react";
+
+export default function Menu({ id, userTodos, setUserTodos, toggleMenu, isMenuOpen, handleOpen, getUserData }) {
+   
+   const [order, setToggleOrder] = useState("asc");
+
+   function toggleOrder() {
+      if (order === "asc" ? setToggleOrder("desc") : setToggleOrder("asc"));
+   }
+
+   function sortAlphabetically() {
+      const sortedList = userTodos.slice().sort((a, b) => {
+         const newOrder = order === "asc" ? 1 : -1;
+         const taskA = a.task.toLowerCase();
+         const taskB = b.task.toLowerCase();
+
+         return newOrder * taskA.localeCompare(taskB);
+      });
+
+      setUserTodos([...sortedList]); // Create a new array to trigger a re-render
+      toggleOrder();
+   }
+
+   function sortByDate() {
+      const sorted = userTodos.sort((a, b) => {
+         const newOrder = order === "asc" ? 1 : -1;
+         const dateA = new Date(a.created_at);
+         const dateB = new Date(b.created_at);
+
+         return newOrder * (dateB - dateA);
+      });
+
+      setUserTodos([...sorted]);
+      toggleOrder();
+   }
+
+   function deleteAllTasks() {
+      var result = confirm("Delete all completed tasks?");
+      if (!result) {
+         return;
+      } else {
+         fetch(`http://localhost:8081/api/todos/todo/${id}`, {
+            method: 'DELETE',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+         })
+            .then((res) => res.json())
+            .then((data) => {
+               alert('Task deleted successfully:', data);
+               getUserData(id);
+            })
+            .catch((error) => {
+               console.error('Error:', error);
+            });
+      }
+   }
+
+   return (
+      <div className={`flex flex-col lg:w-1/4 bg-slate-400/[0.8] rounded-lg fixed top-0 right-0 h-full p-4 transform translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out ${isMenuOpen ? 'block' : 'hidden'} `}>
+         <button
+            className="pb-4 self-end text-xl text-slate-800"
+            onClick={toggleMenu}
+         >
+            X
+         </button>
+         <button className="mb-4 text-xl bg-green-200 hover:bg-green-100 text-slate-800 rounded-lg p-3 hover:cursor-pointer" onClick={handleOpen}>
+            Add Task
+         </button>
+         <button className="mb-4 text-xl bg-green-200 hover:bg-green-100 text-slate-800 rounded-lg p-3 hover:cursor-pointer" onClick={() => {}}>
+            Select All
+         </button>
+         <button className="mb-4 text-xl bg-green-200 hover:bg-green-100 text-slate-800 rounded-lg p-3 hover:cursor-pointer" onClick={sortAlphabetically}>
+            Sort Alphabetically
+         </button>
+         <button className="mb-4 text-xl bg-green-200 hover:bg-green-100 text-slate-800 rounded-lg p-3 hover:cursor-pointer" onClick={sortByDate}>
+            Sort By Date
+         </button>
+         <button className="mb-4 text-xl bg-red-100 hover:bg-red-300 text-slate-800 rounded-lg p-3 hover:cursor-pointer" onClick={deleteAllTasks}>
+            Delete All Completed
+         </button>
+      </div>
+   );
+}
+

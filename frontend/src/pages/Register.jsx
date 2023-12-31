@@ -5,9 +5,9 @@ export const Register = () => {
    const form = useRef();
    const navigate = useNavigate();
 
-   function handleSubmit(event) {
+   async function handleSubmit(event) {
       event.preventDefault();
-      const data = {
+      const formData = {
          email: form.current.email.value,
          password: form.current.password.value,
          confirmPassword: form.current.confirmPassword.value
@@ -16,28 +16,25 @@ export const Register = () => {
       console.log(data);
 
       // Register logic here
-      fetch('http://localhost:8080/api/users/signup', {
+      const response = await fetch('http://127.0.0.1:5000/register', {
          method: 'POST',
+         mode: 'cors',
          headers: {
-           'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization, X-Request-With',
-            'Access-Control-Allow-Credentials': 'true'
+            'Content-Type': 'application/json',
          },
-         body: JSON.stringify(data),
+         body: JSON.stringify(formData),
       })
-      .then(response => response.json())
-      .then(data => {
-         console.log('Success:', data);
-         localStorage.setItem('token', data.id);
-         if (data.email) {
-            navigate(`/`, { state: { email: data.email }});
-         }
-      }).catch((error) => {
-         console.error('Error:', error);
-      });
+
+      if (!response.ok) {
+         throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.token) {
+         localStorage.setItem('token', data.token);
+         navigate(`/`, { state: { email: data.email } });
+      }
    }
 
    return (
@@ -56,7 +53,7 @@ export const Register = () => {
                <br />
                <label className='sm:text-sm md:text-md lg:text-xl'>Confirm Password:</label>
                <input className='p-2 bg-white rounded-lg border border-black border-1' placeholder="Confirm password..." type="password" name="confirmPassword" />
-               <br />
+               <div style={{padding: '15px'}} />
                <br />
                <div className='flex flex-row justify-between w-full'>
                   <input className='bg-red-200 p-5 w-6/12 rounded-xl border border-black border-1 cursor-pointer' type='button' value="Cancel" onClick={() => navigate('/login')} />

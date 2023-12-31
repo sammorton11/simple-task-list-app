@@ -16,21 +16,20 @@ export const Login = () => {
       console.log(data);
 
       // Login logic here
-      fetch('http://localhost:8080/api/users/login', {
+      fetch('http://127.0.0.1:5000/login', {
          method: 'POST',
+         mode: 'cors',
          headers: {
-           'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
          },
          body: JSON.stringify(data),
       })
       .then(response => response.json())
       .then(data => {
-         console.log('Success:', data);
-         console.log("Token", data.id);
-         localStorage.setItem('token', data.id);
-
-         if (data.email) {
-            navigate(`/`, { state: { email: data.email }});
+         if (data.token) {
+            localStorage.setItem('token', data.token);
+            navigate(`/`, { state: { token: data.token }});
          }
 
       }).catch((error) => {
@@ -50,7 +49,7 @@ export const Login = () => {
             <br />
             <label className='sm:text-sm md:text-md lg:text-xl'>Password:</label>
             <input className='p-2 bg-white rounded-lg border border-black border-1' placeholder="Type password..." type="password" name="password" />
-            <br />
+            <div style={{padding: '15px'}} />
             <br />
             <div className='flex flex-row justify-between w-full'>
                <input className='bg-blue-200 p-5 w-6/12 rounded-xl border border-black border-1 cursor-pointer' type='button' value="Register" onClick={() => navigate('/register')} />

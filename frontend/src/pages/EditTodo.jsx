@@ -1,52 +1,62 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { updateTask } from "../helpers/helpers";
 
 function EditTodo() {
    const location = useLocation();
+   const navigate = useNavigate();
+   
+   const token = localStorage.getItem('token');
 
-   const { user_id, todo_id, task, description, formatted_created_at, formatted_updated_at, completed } = location.state || {};
+   const { 
+      todo_id, 
+      completed,
+      formatted_created_at,
+      formatted_updated_at,
+   } = location.state || {};
 
    const [formData, setFormData] = useState({
-      task: task, 
-      description: description, 
-      completed: completed === "true"
+      id: todo_id,
+      task: '', 
+      description: '', 
+      completed: completed,
    });
 
-   const navigate = useNavigate();
-   const [checked, setChecked] = useState(formData.completed);
 
-   function deleteTask() {
-      var result = confirm("Are you sure you want to delete this task?");
-      if (!result) {
-         return;
-      } else {
-         fetch(`http://localhost:8081/api/todos/todo/${user_id}/${todo_id}`, {
-            method: 'DELETE',
+   async function getUserData() {
+      try {
+         const response = await fetch(`http://127.0.0.1:5000/todo/${todo_id}`, {
+            method: 'GET',
+            mode: 'cors',
             headers: {
                'Content-Type': 'application/json',
+               'Access-Control-Allow-Origin': '*',
+               'Authorization': 'Bearer ' + token,
             },
-         })
-            .then((res) => {
-               if (res.ok) {
-                  getUserData(user_id);
-                  console.log('Task deleted successfully');
-               } else {
-                  console.error('Error deleting task:', res.statusText);
-               }
-            })
-            .catch((error) => {
-               console.error('Error:', error);
-            });
+         });
+
+         if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+         }
+
+         const data = await response.json();
+         console.log('Data:', data);
+         setFormData({
+            task: data.task,
+            description: data.description,
+            completed: data.completed,
+         });
+         console.log("Data COMPLETED:", data.completed);
+      } catch (error) {
+         console.error('Error:', error);
       }
    }
 
-   function handleCheck() {
-      setChecked(!checked);
-      setFormData({
-         ...formData,
-         completed: !checked,
-      });
-   }
+   useEffect(() => {
+      getUserData();
+   }, []);
+
+
    function handleTaskChange(e) {
       setFormData({
          ...formData,
@@ -60,30 +70,31 @@ function EditTodo() {
       });
    };
 
-   function updateTask() {
-      fetch(`http://localhost:8081/api/todos/todo/${user_id}/${todo_id}`, {
-         method: 'PUT',
-         headers: {
-            'Content-Type': 'application/json',
-         },
-         body: JSON.stringify({
-            task: formData.task,
-            description: formData.description,
-            completed: formData.completed,
-         }),
-      })
-      .then((res) => res.json())
-      .then((data) => {
-         console.log('Task updated successfully:', data); // Log the response data
-         navigate("/");
-       })
-       .catch((error) => {
-         console.error('Error:', error);
-       });
-   }
-
    function cancel() {
       navigate("/");
+   }
+
+   function deleteTask() {
+      const alert = window.confirm("Are you sure you want to delete this task?");
+      console.log("Alert choice:", alert);
+      if (!alert) return;
+
+      fetch(`http://127.0.0.1:5000/todo/${todo_id}`, {
+         headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Authorization': 'Bearer ' + token,
+         },
+         method: 'DELETE',
+      })
+         .then((res) => res.json())
+         .then((data) => {
+            console.log("Data:", data);
+            navigate("/");
+         })
+         .catch((err) => {
+            console.error(err);
+         });
    }
 
    
@@ -92,29 +103,24 @@ function EditTodo() {
          <form
             onSubmit={(event) => {
                event.preventDefault();
-               updateTask(event);
+               updateTask(todo_id, formData.task, completed, formData.description);
+               navigate("/");
             }}
          >
             <h1 className='text-slate-500 text-3xl mb-5'>Update Task</h1>
             <div className="flex flex-row">
                <input
-                  className="border w-32 rounded-md bg-green-200 text-slate-800"
+                  className="border border-slate-500 w-32 rounded-md bg-green-200 text-slate-800"
                   type="text" name="task" value={formData.task} onChange={handleTaskChange}
                />
-               <div style={{ padding: '15px' }} />
-               <input className="hover:cursor-pointer accent-blue-300 w-6 transition duration-550 ease-in-out" type="checkbox" onChange={handleCheck} checked={formData.completed} />
+
                <button className="text-3xl hover:cursor-pointer p-5 text-slate-700 rounded-lg" onClick={deleteTask}>
                   <i className="fa fa-trash-o "></i>
                </button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} >
                <textarea
-                  className="w-full h-full rounded-md bg-green-200 text-slate-800 p-5 mb-10 border border-slate-500 border-8"
-                  style={{
-                     paddingBottom: '100px',
-                     border: '1px solid #000000',
-                     borderRadius: '0.375rem',
-                  }}
+                  className="w-full h-full rounded-md bg-green-200 text-slate-800 p-5 pb-24 mb-10 border border-slate-500"
                   type="text"
                   name="description"
                   value={formData.description}
